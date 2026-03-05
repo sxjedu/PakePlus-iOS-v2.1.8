@@ -1,88 +1,520 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="stylesheet" href="./static/css/styles.css" />
-        <meta
-            http-equiv="Content-Security-Policy"
-            content="default-src * 'unsafe-inline' 'unsafe-eval'"
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Tauri App</title>
-        <script src="./static/js/main.js"></script>
-    </head>
-    <body>
-        <main class="container">
-            <h1>Welcome to TauriMan</h1>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>三年级科学下册 · 互动复习手册</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: #f4f7fb;
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 20px; /* 大字体基础 */
+        }
+        /* 整体容器 */
+        .review-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        /* 标题 */
+        h1 {
+            font-size: 2.4rem;
+            color: #1e3c5c;
+            margin-bottom: 0.75rem;
+            text-align: center;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        .sub {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #2f5575;
+            margin-bottom: 1.5rem;
+        }
+        /* 控制栏：单元按钮 + 全局显示按钮 */
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .unit-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        .unit-btn {
+            font-size: 1.8rem;
+            font-weight: bold;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 60px;
+            background: white;
+            box-shadow: 0 6px 0 #b0c4de, 0 8px 12px rgba(0,0,0,0.1);
+            color: #1e3c5c;
+            cursor: pointer;
+            transition: 0.1s ease;
+            border: 2px solid transparent;
+            min-width: 180px;
+        }
+        .unit-btn.active {
+            background: #ffd966;
+            box-shadow: 0 4px 0 #b68b40;
+            transform: translateY(2px);
+            border: 2px solid #1e3c5c;
+        }
+        .unit-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #b0c4de;
+        }
+        /* 全局按钮组 */
+        .global-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .global-btn {
+            font-size: 1.8rem;
+            font-weight: bold;
+            padding: 1rem 2rem;
+            border: 3px solid #1e3c5c;
+            border-radius: 60px;
+            background-color: #ffffff;
+            color: #1e3c5c;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 0 #a0b9ce;
+            min-width: 160px;
+        }
+        .global-btn:hover {
+            background-color: #e6eff9;
+        }
+        .global-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+        /* 单元内容区域 */
+        .unit-content {
+            display: none;
+            padding: 1.5rem;
+            border-radius: 48px 48px 48px 48px;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(2px);
+            box-shadow: 0 12px 24px rgba(0,20,30,0.2);
+            margin-top: 1rem;
+        }
+        .unit-content.active-unit {
+            display: block;
+        }
+        /* 单元边框配色 */
+        .unit-1 {
+            border: 6px solid #3498db;
+            background: #eef7ff;
+        }
+        .unit-2 {
+            border: 6px solid #2ecc71;
+            background: #e9f9ef;
+        }
+        .unit-3 {
+            border: 6px solid #f39c12;
+            background: #fff3e0;
+        }
+        /* 课卡片 */
+        .lesson-card {
+            background: white;
+            border-radius: 32px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.05);
+        }
+        .lesson-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0b3954;
+            border-bottom: 4px solid currentColor;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+        .unit-1 .lesson-title { border-color: #3498db; }
+        .unit-2 .lesson-title { border-color: #2ecc71; }
+        .unit-3 .lesson-title { border-color: #f39c12; }
 
-            <div class="row">
-                <a
-                    href="https://tauri.app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <img
-                        src="./assets/tauri.svg"
-                        class="logo tauri"
-                        alt="Tauri logo"
-                    />
-                </a>
-                <a
-                    href="https://pakeplus.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <img
-                        src="https://hk.gh-proxy.org/https://github.com/Sjj1024/PakePlus/blob/main/app-icon.png"
-                        class="logo vanilla"
-                        alt="JavaScript logo"
-                    />
-                </a>
-            </div>
-            <p>Click to get data</p>
-            <form class="row" id="greet-form">
-                <input id="greet-input" placeholder="Enter a name..." />
-                <button type="submit" id="getdata">GET DATA</button>
-            </form>
-            <div class="functions">
-                <a href="./book.html" target="_self">跳转到book.html</a>
-                <a
-                    href="https://www.baidu.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >跳到百度blank
-                </a>
-                <a
-                    href="https://www.baidu.com"
-                    target="_self"
-                    rel="noopener noreferrer"
-                >
-                    跳到百度self
-                </a>
-                <button onclick="sayHello()">点击我</button>
-                <button onclick="sayHello()">下载文件</button>
-                <button onclick="sayHello()">上传文件</button>
-                <button onclick="sayHello()">访问相机</button>
-                <button onclick="sayHello()">访问麦克风</button>
-                <button onclick="sayHello()">访问相册</button>
-                <button class="btn" onclick="openWechat()">打开微信</button>
-                <button class="btn" onclick="openWechatScan()">
-                    打开扫一扫
-                </button>
-                <button class="btn" onclick="openZhihu()">打开知乎</button>
-                <button onclick="sayHello()">打开抖音</button>
-                <button onclick="sayHello()">用浏览器打开</button>
-                <button>打开知乎</button>
-            </div>
-            <p id="greet-msg"></p>
-            <img src="./static/image/cursor.jpeg" alt="logo" />
-            <video
-                src="https://hk.gh-proxy.org/https://github.com/Sjj1024/PakePlus/blob/main/docs/static/videos/pakeplus.mp4"
-                autoplay
-                controls
-                style="width: 100%; height: 100%"
-            ></video>
-            <audio src="./static/music/yin.mp3" controls></audio>
-        </main>
-    </body>
+        /* 知识点列表 */
+        .point-list {
+            list-style: none;
+        }
+        .point-item {
+            font-size: 1.6rem;
+            line-height: 2.2rem;
+            margin-bottom: 1.25rem;
+            padding-left: 1.2rem;
+            position: relative;
+            word-break: break-word;
+        }
+        .point-item::before {
+            content: "•";
+            color: #1e3c5c;
+            font-weight: bold;
+            font-size: 2rem;
+            position: absolute;
+            left: 0;
+            top: -0.2rem;
+        }
+        /* 填空块样式 */
+        .blank {
+            display: inline-block;
+            min-width: 6rem;
+            background-color: #b0b0b0;
+            color: transparent;  /* 默认隐藏文字，只显示占位符 */
+            border-radius: 24px;
+            padding: 0.2rem 1rem;
+            margin: 0 0.2rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.7rem;
+            line-height: 2rem;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: inset 0 -2px 0 #6f6f6f;
+            transition: 0.1s;
+            vertical-align: middle;
+        }
+        /* 显示答案时的样式 (保留背景色变浅，文字可见) */
+        .blank.showing {
+            background-color: #f9e68c;
+            color: #1e3c5c !important;
+            box-shadow: inset 0 -2px 0 #b68b40;
+            border: 1px solid #a07d2e;
+        }
+        /* 占位符下划线 (默认) */
+        .blank::before {
+            content: "______";
+            color: #4a4a4a;
+            font-weight: 400;
+            letter-spacing: 2px;
+        }
+        /* 显示答案时隐藏占位符 */
+        .blank.showing::before {
+            content: none;
+        }
+        /* 保证答案文字出现 */
+        .blank.showing {
+            color: #1e3c5c;
+        }
+
+        /* 移动端调整 */
+        @media (max-width: 650px) {
+            body { font-size: 18px; }
+            .unit-btn, .global-btn { font-size: 1.5rem; padding: 0.8rem 1.2rem; min-width: 140px; }
+            .point-item { font-size: 1.4rem; }
+            .blank { min-width: 5rem; font-size: 1.5rem; }
+        }
+        @media (max-width: 450px) {
+            .unit-btn, .global-btn { width: 100%; }
+        }
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #5c7f9c;
+        }
+    </style>
+</head>
+<body>
+<div class="review-container">
+    <h1>🌍 科学三年级下册</h1>
+    <div class="sub">🔍 点击灰色方块显示答案 · 再点隐藏</div>
+
+    <!-- 第一层控制：单元按钮 + 全局显示隐藏 -->
+    <div class="control-panel">
+        <div class="unit-tabs">
+            <button class="unit-btn active" data-unit="1">❶ 辨别方向</button>
+            <button class="unit-btn" data-unit="2">❷ 动物的一生</button>
+            <button class="unit-btn" data-unit="3">❸ 只有一个地球</button>
+        </div>
+        <div class="global-actions">
+            <button class="global-btn" id="showAllBtn">🔓 显示所有答案</button>
+            <button class="global-btn" id="hideAllBtn">🔒 隐藏所有答案</button>
+        </div>
+    </div>
+
+    <!-- 三个单元容器 (动态由JS填充) 使用不同的边框类 -->
+    <div id="unit-1-content" class="unit-content unit-1 active-unit"></div>
+    <div id="unit-2-content" class="unit-content unit-2"></div>
+    <div id="unit-3-content" class="unit-content unit-3"></div>
+
+    <footer>👆 点击单元按钮切换 · 点击填空块复习</footer>
+</div>
+
+<script>
+    (function() {
+        // ---------- 手册数据 (使用{{关键词}}标记需要挖空的词，支持顿号分开标记) ----------
+        // 单元1：辨别方向  (课号1~8)
+        const unit1Lessons = [
+            { title: "第1课 根据太阳辨别方向", points: [
+                "太阳每天从{{东方}}升起，{{西方}}落下。古人根据这个规律确立了四个基本方向：{{东}}、{{西}}、{{南}}、{{北}}。",
+                "面朝太阳升起的方向是{{东方}}，背后是{{西方}}；右手边是{{南方}}，左手边是{{北方}}。",
+                "在平地上立一根短棍，记录上下午影子顶点的位置，两点连线指示{{东西}}方向，其垂直线指示{{南北}}方向。该方法在阴天或夜晚无法使用。"
+            ]},
+            { title: "第2课 利用自然物辨别方向", points: [
+                "在晴朗的夜空中，找到{{北极星}}就能确定北方。它位于北斗七星勺口两颗星延长线的约{{五倍}}距离处。",
+                "在我国北方，冬季屋顶、山坡上朝南方向的积雪融化得更{{快}}，朝北方向融化较{{慢}}。",
+                "树木朝南的一侧枝叶通常更{{茂盛}}，年轮也更{{稀疏}}。苔藓等喜阴植物多在朝{{北}}或背阴处生长。"
+            ]},
+            { title: "第3课 利用磁铁辨别方向", points: [
+                "我国古人发现的“{{磁石}}”能吸引铁。将条形磁铁悬挂或置于水面，它能自由旋转并最终指向{{南北}}方向。",
+                "使用磁铁辨别方向时，必须让其自由悬空或漂浮，并远离{{铁制品}}和其他{{磁铁}}，否则指向会受干扰。",
+                "我们将磁铁指向北的一端称为{{北极}}（{{N极}}），指向南的一端称为{{南极}}（{{S极}}）。"
+            ]},
+            { title: "第4课 磁极与方向", points: [
+                "当两个磁铁的{{北极}}（或{{南极}}）靠近时，会相互推开；当一个磁铁的{{北极}}与另一个磁铁的{{南极}}靠近时，会相互吸引。",
+                "地球具有磁场，称为{{地磁场}}。地磁南极在地理{{北极}}附近，地磁北极在地理{{南极}}附近。",
+                "例如：{{磁悬浮列车}}、冰箱磁贴、磁性黑板、{{指南针}}等都利用了磁极的吸引或排斥原理。"
+            ]},
+            { title: "第5课 制作小磁针", points: [
+                "用磁铁的磁极沿同一方向多次摩擦钢针，能使钢针获得磁性，这个过程叫{{磁化}}。宋代《{{梦溪笔谈}}》就有记载。",
+                "用磁铁磁性最强的部位（{{两极}}）摩擦效果更好；摩擦次数越多，磁针的磁性通常{{越强}}。",
+                "用已知磁极的磁铁去靠近自制磁针，根据“{{异性相吸}}”原则，可以判断磁针的N极和S极。"
+            ]},
+            { title: "第6课 设计指南针", points: [
+                "一个实用的指南针需要：一枚能自由旋转的{{磁针}}，一个标有至少{{8}}个方向的方位盘。",
+                "评价标准包括：指针转动灵活、指向准确、材料易得、制作简便、外观美观、便于{{携带}}等。",
+                "为了让磁针灵活转动，可以采用{{水浮法}}、{{悬挂法}}或{{顶针法}}。"
+            ]},
+            { title: "第7课 制作指南针", points: [
+                "{{北宋}}时期，我国海船已使用“{{水浮法}}”指南针：将磁针穿在灯草上，漂浮于盛水的碗中。",
+                "小组合作时，应分步骤进行：制作磁针、制作方位盘、组装调试、测试改进。",
+                "将自制指南针与标准指南针对比，测试其指向是否{{准确}}、{{灵敏}}。"
+            ]},
+            { title: "第8课 用指南针“寻宝”", points: [
+                "使用步骤：①放平指南针，让磁针自由转动；②待静止，红色端（{{N}}）指北；③转动方位盘，使“北”与磁针对齐；④此时方位盘方向为实际方向。",
+                "根据提示（如“向东走5米，再向南走10米”），先用指南针确定{{方向}}，再估算步数。",
+                "在接近小磁铁球时，指南针的指针可能会被吸引而偏转，这反而能帮助定位“宝藏”。"
+            ]}
+        ];
+
+        // 单元2：动物的一生
+        const unit2Lessons = [
+            { title: "第1课 不同种类的动物", points: [
+                "身体内有脊柱的动物叫{{脊椎动物}}（如鱼、鸟、兔）；没有脊柱的叫{{无脊椎动物}}（如昆虫、蜗牛）。",
+                "主要以植物为食的叫{{植食动物}}（如牛）；主要以其他动物为食的叫{{肉食动物}}（如老虎）；既吃植物又吃动物的叫{{杂食动物}}（如人类）。",
+                "还可以按繁殖方式（{{卵生}}/{{胎生}}）、生活环境（水生/陆生/两栖）等分类。"
+            ]},
+            { title: "第2课 动物的繁殖", points: [
+                "像蚕、鸡、鱼那样产卵的繁殖方式叫{{卵生}}；像猫、狗、牛那样直接生下幼崽的方式叫{{胎生}}。",
+                "母鸡产卵前会寻找安全的窝，产卵后会{{孵蛋}}；许多鸟类会筑巢、求偶、共同哺育后代。",
+                "无论是卵生还是胎生，通常都需要雄性和雌性结合，产生{{受精卵}}。"
+            ]},
+            { title: "第3课 迎接蚕宝宝的到来", points: [
+                "蚕卵的孵化需要适宜的温度（约{{25°C}}）、一定的湿度和空气。",
+                "饲养盒应清洁、通风，盒盖上扎小孔保证{{空气}}流通。",
+                "健康的蚕卵呈扁椭圆形，颜色为{{灰紫色}}或灰绿色。"
+            ]},
+            { title: "第4课 幼蚕在生长", points: [
+                "幼蚕身体分为{{头}}、{{胸}}、{{腹}}三部分。胸部有三对胸足，腹部有四对腹足和一对尾足。",
+                "当旧的外皮限制生长时，蚕会蜕去旧皮，这个过程叫{{蜕皮}}。一生要蜕皮{{4-6}}次。",
+                "蚕最喜爱吃{{桑叶}}，也可吃少量莴苣叶。"
+            ]},
+            { title: "第5课 蚕蛹", points: [
+                "蚕生长到一定阶段，会停止进食，身体发黄发亮，开始{{吐丝}}结茧。",
+                "蛹呈褐色{{纺锤形}}，不吃不动，但体内正在变成成虫（蛾）。",
+                "坚硬的蚕茧可以保护内部脆弱的{{蛹}}。"
+            ]},
+            { title: "第6课 茧中钻出了蚕蛾", points: [
+                "蛹在茧内发育成熟后，羽化成{{蚕蛾}}，证明蛹是活着的。",
+                "蚕蛾身体分头胸腹，长有{{两对}}翅膀和{{三对}}足。",
+                "蚕蛾口器退化，不再进食，交配产卵后死亡。"
+            ]},
+            { title: "第7课 昆虫的一生", points: [
+                "蚕的发育：卵→幼虫→{{蛹}}→成虫，称为{{完全变态}}。",
+                "菜粉蝶、蜜蜂属于{{完全变态}}；蜻蜓的发育没有蛹期，叫{{不完全变态}}。",
+                "所有动物都会经历从出生、生长、繁殖到{{死亡}}的生命过程。"
+            ]},
+            { title: "第8课 动物的生命周期", points: [
+                "鸟类（如鸡）：卵→{{雏鸟}}→成鸟。哺乳动物（如猫）：幼崽→{{成年}}。",
+                "动物生存都需要食物、空气、水、适宜的{{温度}}以及安全的栖息地。",
+                "人类会经历胎儿、婴儿、幼儿、儿童、青年、成年、{{老年}}等阶段。"
+            ]}
+        ];
+
+        // 单元3：只有一个地球
+        const unit3Lessons = [
+            { title: "第1课 地球是我们的家园", points: [
+                "地球提供了生存所需：空气、水、食物、适宜的{{温度}}等。",
+                "科普海报应有明确的科学主题、准确的图文资料和吸引人的{{版面}}设计。",
+                "建立“地球小档案”认识地球的独特之处。"
+            ]},
+            { title: "第2课 水的星球", points: [
+                "从太空看，地球是一个{{蓝色}}星球。海洋面积远大于陆地。",
+                "地球上的水包括液态水、固态水（冰川）和{{水蒸气}}。但可利用的淡水资源非常{{稀少}}。",
+                "所有生物都离不开{{水}}，我们应该节约用水。"
+            ]},
+            { title: "第3课 地球的卫星", points: [
+                "月球绕着{{地球}}旋转，是离地球最近的天体。",
+                "月球表面没有空气和水，昼夜温差极大（白天超{{120°C}}，夜晚低于{{-180°C}}），布满环形山。",
+                "古人用望远镜看到月球暗色区域，取名“{{海}}”，其实是玄武岩平原。"
+            ]},
+            { title: "第4课 我们来造“环形山”", points: [
+                "月球没有大气层，陨石撞击形成{{环形山}}。",
+                "用水槽中的细沙模拟月表，用球模拟{{陨石}}撞击造坑。",
+                "地球有大气层保护，但巨大陨石仍会留下撞击坑，如美国的{{巴林杰陨石坑}}。"
+            ]},
+            { title: "第5课 发光发热的太阳", points: [
+                "太阳表面温度约{{6000°C}}。像太阳这样能发光的物体叫{{光源}}（如灯泡、火焰）。",
+                "太阳光驱动植物的{{光合作用}}、水的循环、大气的运动。",
+                "例如太阳能热水器、太阳能电池板，太阳能{{清洁}}、可再生。"
+            ]},
+            { title: "第6课 一天中影子的变化", points: [
+                "影子是光沿{{直线}}传播时被不透明物体阻挡形成的。",
+                "早晨影子在{{西}}，长；中午影子在{{北}}（我国），短；傍晚影子在{{东}}，长。",
+                "古人根据影子规律发明了{{日晷}}。"
+            ]},
+            { title: "第7课 地球的“兄弟姐妹”", points: [
+                "离太阳从近到远：水星、金星、地球、火星、木星、土星、天王星、{{海王星}}。",
+                "地球具有适宜的温度、液态水、含{{氧气}}的大气层，孕育了生命。",
+                "用彩泥模拟行星，可以比较它们的大小和特征。"
+            ]},
+            { title: "第8课 制作地球科普海报", points: [
+                "可以从地球的独特性、地球面临的问题或地球与人类的关系中选取{{主题}}。",
+                "标题醒目，内容分区清晰，科学事实{{准确}}。",
+                "通过展示和讲解，传播科学知识并获得启发。"
+            ]}
+        ];
+
+        // 将带有{{}}的文本转换为真正的blank span的函数
+        function parseBlanks(text) {
+            // 匹配双花括号内的内容，如 {{东方}}
+            const regex = /\{\{(.*?)\}\}/g;
+            let lastIndex = 0;
+            let parts = [];
+            let match;
+            while ((match = regex.exec(text)) !== null) {
+                const before = text.slice(lastIndex, match.index);
+                if (before) parts.push(before);
+                const keyword = match[1];  // 花括号里的词
+                // 生成一个空白块，data-answer存储答案
+                parts.push(`<span class="blank" data-answer="${keyword}"></span>`);
+                lastIndex = match.index + match[0].length;
+            }
+            if (lastIndex < text.length) {
+                parts.push(text.slice(lastIndex));
+            }
+            return parts.join('');
+        }
+
+        // 渲染某个单元的所有课到指定容器
+        function renderUnit(containerId, lessons, unitClass) {
+            const container = document.getElementById(containerId);
+            let html = '';
+            lessons.forEach(lesson => {
+                html += `<div class="lesson-card">`;
+                html += `<div class="lesson-title">${lesson.title}</div>`;
+                html += `<ul class="point-list">`;
+                lesson.points.forEach(point => {
+                    const parsed = parseBlanks(point);
+                    html += `<li class="point-item">${parsed}</li>`;
+                });
+                html += `</ul></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // 初始化渲染三个单元
+        renderUnit('unit-1-content', unit1Lessons, 'unit-1');
+        renderUnit('unit-2-content', unit2Lessons, 'unit-2');
+        renderUnit('unit-3-content', unit3Lessons, 'unit-3');
+
+        // ---------- 交互逻辑 ----------
+        // 单元切换
+        const unitBtns = document.querySelectorAll('.unit-btn');
+        const unitContents = document.querySelectorAll('.unit-content');
+
+        function setActiveUnit(unitNumber) {
+            unitContents.forEach(content => content.classList.remove('active-unit'));
+            document.getElementById(`unit-${unitNumber}-content`).classList.add('active-unit');
+            unitBtns.forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.unit-btn[data-unit="${unitNumber}"]`).classList.add('active');
+        }
+
+        unitBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const unit = e.target.getAttribute('data-unit');
+                setActiveUnit(unit);
+            });
+        });
+
+        // 事件委托处理blank点击 (因为blank是动态生成的)
+        document.querySelector('.review-container').addEventListener('click', function(e) {
+            const target = e.target;
+            if (target.classList.contains('blank')) {
+                // 点击空白块：切换显示/隐藏答案
+                if (target.classList.contains('showing')) {
+                    // 隐藏答案：移除showing，恢复占位符
+                    target.classList.remove('showing');
+                } else {
+                    // 显示答案: 添加showing (css伪类会隐藏占位符, 文字通过data-answer显示？需要设置innerText吗？)
+                    // 方案：利用伪元素显示占位符，而文字内容用data-answer展示？但为了简单，我们通过::before控制占位符，答案存储在data-answer，但文字颜色透明看不到。
+                    // 更稳健：默认span没有文字内容，靠::before展示占位符。显示答案时移除::before效果，设置innerText为data-answer。
+                    // 修改样式：blank默认无文字(::before显示占位符)，显示答案时::before失效，并且innerText设置为答案。
+                    // 但当前blank是空元素，没有innerText。改进：初始化blank时innerText为空，由伪元素显示占位符。点击显示答案时，将innerText设为data-answer，并添加类，同时伪元素content:none。再次点击innerText清空，移除类。
+                    // 需要调整现有blank生成：parseBlanks中生成<span class="blank" data-answer="..."></span> 没有innerText。
+                    // 在点击处理逻辑里操纵innerText。
+                    const ans = target.getAttribute('data-answer');
+                    if (target.classList.contains('showing')) {
+                        // 如果已显示，则隐藏：清空innerText，移除showing类
+                        target.innerText = '';
+                        target.classList.remove('showing');
+                    } else {
+                        // 未显示，显示答案
+                        target.innerText = ans;
+                        target.classList.add('showing');
+                    }
+                }
+            }
+        });
+
+        // 显示所有答案
+        document.getElementById('showAllBtn').addEventListener('click', function() {
+            const allBlanks = document.querySelectorAll('.blank');
+            allBlanks.forEach(blank => {
+                const ans = blank.getAttribute('data-answer');
+                blank.innerText = ans;
+                blank.classList.add('showing');
+            });
+        });
+
+        // 隐藏所有答案
+        document.getElementById('hideAllBtn').addEventListener('click', function() {
+            const allBlanks = document.querySelectorAll('.blank');
+            allBlanks.forEach(blank => {
+                blank.innerText = '';
+                blank.classList.remove('showing');
+            });
+        });
+
+        // 确保点击blank时正确切换，之前事件委托中已实现；但为防止冲突，补充：
+        // 注意：blank的innerText在显示答案时设为答案，隐藏时置空。完美。
+        // 另外，如果用户点击了已显示的，再次点击隐藏，上述逻辑支持。
+
+        // 初始化所有blank为未显示状态
+        const initBlanks = document.querySelectorAll('.blank');
+        initBlanks.forEach(b => {
+            b.innerText = ''; // 确保空内容，伪元素显示占位符
+            b.classList.remove('showing');
+        });
+    })();
+</script>
+</body>
 </html>

@@ -1,88 +1,479 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="stylesheet" href="./static/css/styles.css" />
-        <meta
-            http-equiv="Content-Security-Policy"
-            content="default-src * 'unsafe-inline' 'unsafe-eval'"
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Tauri App</title>
-        <script src="./static/js/main.js"></script>
-    </head>
-    <body>
-        <main class="container">
-            <h1>Welcome to TauriMan</h1>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌱 植物生长变化 · 交互复习 (小学科学)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-            <div class="row">
-                <a
-                    href="https://tauri.app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <img
-                        src="./assets/tauri.svg"
-                        class="logo tauri"
-                        alt="Tauri logo"
-                    />
-                </a>
-                <a
-                    href="https://pakeplus.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <img
-                        src="https://hk.gh-proxy.org/https://github.com/Sjj1024/PakePlus/blob/main/app-icon.png"
-                        class="logo vanilla"
-                        alt="JavaScript logo"
-                    />
-                </a>
-            </div>
-            <p>Click to get data</p>
-            <form class="row" id="greet-form">
-                <input id="greet-input" placeholder="Enter a name..." />
-                <button type="submit" id="getdata">GET DATA</button>
-            </form>
-            <div class="functions">
-                <a href="./book.html" target="_self">跳转到book.html</a>
-                <a
-                    href="https://www.baidu.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    >跳到百度blank
-                </a>
-                <a
-                    href="https://www.baidu.com"
-                    target="_self"
-                    rel="noopener noreferrer"
-                >
-                    跳到百度self
-                </a>
-                <button onclick="sayHello()">点击我</button>
-                <button onclick="sayHello()">下载文件</button>
-                <button onclick="sayHello()">上传文件</button>
-                <button onclick="sayHello()">访问相机</button>
-                <button onclick="sayHello()">访问麦克风</button>
-                <button onclick="sayHello()">访问相册</button>
-                <button class="btn" onclick="openWechat()">打开微信</button>
-                <button class="btn" onclick="openWechatScan()">
-                    打开扫一扫
-                </button>
-                <button class="btn" onclick="openZhihu()">打开知乎</button>
-                <button onclick="sayHello()">打开抖音</button>
-                <button onclick="sayHello()">用浏览器打开</button>
-                <button>打开知乎</button>
-            </div>
-            <p id="greet-msg"></p>
-            <img src="./static/image/cursor.jpeg" alt="logo" />
-            <video
-                src="https://hk.gh-proxy.org/https://github.com/Sjj1024/PakePlus/blob/main/docs/static/videos/pakeplus.mp4"
-                autoplay
-                controls
-                style="width: 100%; height: 100%"
-            ></video>
-            <audio src="./static/music/yin.mp3" controls></audio>
-        </main>
-    </body>
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: #f1f8e9;
+            padding: 20px;
+            font-size: 20px; /* 大字体基础 */
+            line-height: 1.6;
+            color: #1f3a2f;
+        }
+
+        .review-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 40px 40px 20px 20px;
+            box-shadow: 0 20px 40px rgba(0,40,0,0.15);
+            overflow: hidden;
+            padding: 30px 30px 50px;
+            border: 2px solid #a5d6a5;
+        }
+
+        /* 标题区 */
+        .header-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-title h1 {
+            font-size: 3rem;
+            background: linear-gradient(145deg, #2e7d32, #1b5e20);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-shadow: 4px 4px 10px rgba(0,80,0,0.1);
+        }
+
+        .header-title p {
+            font-size: 1.5rem;
+            color: #2e7d32;
+            border-bottom: 3px dashed #81c784;
+            padding-bottom: 10px;
+            margin-top: 5px;
+        }
+
+        /* 控制大按钮 */
+        .button-panel {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0 40px;
+            flex-wrap: wrap;
+        }
+
+        .big-btn {
+            font-size: 2rem;
+            font-weight: bold;
+            padding: 20px 45px;
+            border: none;
+            border-radius: 60px;
+            background: #ffb74d;
+            color: #3e2a1f;
+            box-shadow: 0 10px 0 #e68a2e, 0 10px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: 0.08s linear;
+            letter-spacing: 2px;
+            border: 3px solid #ffe0b0;
+        }
+
+        .big-btn:active {
+            transform: translateY(8px);
+            box-shadow: 0 2px 0 #e68a2e, 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .big-btn.show-all {
+            background: #66bb6a;
+            color: #f1f8e9;
+            box-shadow: 0 10px 0 #2e7d32, 0 10px 20px rgba(0,0,0,0.2);
+            border: 3px solid #c8e6c9;
+        }
+
+        .big-btn.hide-all {
+            background: #ef5350;
+            color: #fff3e0;
+            box-shadow: 0 10px 0 #b71c1c, 0 10px 20px rgba(0,0,0,0.2);
+            border: 3px solid #ffcdd2;
+        }
+
+        /* 内容卡片——分块不同颜色边框 */
+        .knowledge-card {
+            background: #ffffffdd;
+            backdrop-filter: blur(2px);
+            padding: 25px 30px;
+            margin: 30px 0;
+            border-radius: 50px 20px 50px 20px;
+            border-left: 12px solid;
+            box-shadow: 0 8px 20px rgba(0,40,0,0.08);
+            transition: 0.2s;
+            font-size: 1.2rem;
+        }
+
+        /* 根据编号规律赋予不同边框色，更活泼 */
+        .knowledge-card:nth-of-type(6n+1) { border-left-color: #f06292; background: #fff9fb; }  /* 粉 */
+        .knowledge-card:nth-of-type(6n+2) { border-left-color: #ba68c8; background: #f9f2fc; }  /* 紫 */
+        .knowledge-card:nth-of-type(6n+3) { border-left-color: #4fc3f7; background: #f0faff; }  /* 浅蓝 */
+        .knowledge-card:nth-of-type(6n+4) { border-left-color: #4db6ac; background: #f0fbf9; }  /* 绿松 */
+        .knowledge-card:nth-of-type(6n+5) { border-left-color: #ff8a65; background: #fff4f0; }  /* 橙 */
+        .knowledge-card:nth-of-type(6n+6) { border-left-color: #aed581; background: #f7fcec; }  /* 嫩绿 */
+
+        .knowledge-card p, .knowledge-card li {
+            margin: 0.8rem 0;
+        }
+
+        /* 列表和表格 */
+        ul, ol {
+            padding-left: 30px;
+        }
+
+        li {
+            font-size: 1.1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1rem;
+            background: #fefee8;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 6px 12px rgba(0,30,0,0.05);
+        }
+
+        th, td {
+            border: 3px solid #c5e1a5;
+            padding: 15px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #aed581;
+            color: #1f3a2f;
+            font-size: 1.3rem;
+        }
+
+        td {
+            background-color: #f9ffef;
+        }
+
+        /* 填空块的样式 */
+        .blank-group {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 2px 0;
+            margin: 0 2px;
+        }
+
+        .blank {
+            display: inline-block;
+            background-color: #bdbdbd;
+            border-radius: 30px;
+            padding: 0.15rem 0.9rem;
+            margin: 0 2px;
+            min-width: 60px;
+            text-align: center;
+            font-weight: 600;
+            color: #1b2f1b;
+            cursor: pointer;
+            box-shadow: inset 0 -2px 0 #757575;
+            border: 1px solid #9e9e9e;
+            font-size: 1.1rem;
+            transition: 0.1s;
+            line-height: 1.8;
+            user-select: none;
+        }
+
+        .blank.hidden-state {
+            background-color: #cfd8dc;
+            color: transparent;  /* 隐藏文字 */
+            text-shadow: none;
+            position: relative;
+        }
+
+        /* 隐藏时显示一个淡淡的问号图案（通过伪元素） */
+        .blank.hidden-state::after {
+            content: "?";
+            color: #546e7a;
+            font-weight: bold;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.2rem;
+            opacity: 0.7;
+            top: 0;
+        }
+
+        .blank:active {
+            transform: scale(0.95);
+        }
+
+        .blank-sep {
+            font-weight: bold;
+            color: #2e3b2e;
+            margin: 0 2px;
+            font-size: 1.3rem;
+        }
+
+        /* 图片相关隐藏 (原始文档图片标记直接忽略) */
+        .media-ignore {
+            display: none;
+        }
+
+        /* 强调原有加粗等 */
+        strong {
+            color: #1f5e2d;
+            font-weight: 700;
+        }
+
+        .underline {
+            text-decoration: none; /* 我们不用下划线，改用填空 */
+        }
+
+        /* 页脚 */
+        .footer-note {
+            margin-top: 50px;
+            text-align: right;
+            font-size: 1.2rem;
+            color: #81a481;
+            border-top: 2px dashed #c0e0c0;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="review-container">
+    <div class="header-title">
+        <h1>🌻 第一单元 · 植物的生长变化</h1>
+        <p>🔍 点击灰色方块显示答案 · 再点击隐藏</p>
+    </div>
+
+    <div class="button-panel">
+        <button class="big-btn show-all" id="showAllBtn">🔓 显示所有答案</button>
+        <button class="big-btn hide-all" id="hideAllBtn">🔒 隐藏所有答案</button>
+    </div>
+
+    <!-- 知识内容容器 (所有文本填空标记将在这里被动态处理) -->
+    <div id="knowledgeContent" class="knowledge-content">
+        <!-- 手动构建卡片结构，每个主要知识点作为一个卡片，但为了保持原编号流畅，我们按原条目分段。下面根据文档内容编写HTML，保留[关键词]{.underline}标记，图片标记已移除，表格手动构造并保留标记。 -->
+        
+        <!-- 卡片 1-4 合并为一个卡片? 为了清晰每个核心点独立卡片，但编号连续。我用<p>包裹带编号的句子。 -->
+        <div class="knowledge-card"><p><strong>1.</strong> 绿色开花植物几乎都是从[种子]{.underline}开始新生命的。</p></div>
+        <div class="knowledge-card"><p><strong>2.</strong> 综合运用[感官]{.underline}并用[比较]{.underline}的方法能观察到种子更多的特征。</p></div>
+        <div class="knowledge-card"><p><strong>3.</strong> 用[放大镜]{.underline}观察种子的细微结构和颗粒较小的种子的特征。</p></div>
+        <div class="knowledge-card"><p><strong>4.</strong> 不同植物种子的颜色、形状、大小各不相同，但是它们的[内部结构]{.underline}基本相同。</p></div>
+
+        <!-- 跳过图片行 (原media) 直接忽略 -->
+        <!-- 5 -->
+        <div class="knowledge-card"><p><strong>5.</strong> 挑选[饱满、没有受过伤]{.underline}的凤仙花种子可以将种子放入水中，观察种子在水中的沉浮。</p></div>
+        <!-- 6 -->
+        <div class="knowledge-card"><p><strong>6.</strong> 在记录凤仙花的生长变化过程中我们可以采用填写[记录表、写观察日记、拍照、画图、使用测量纸袋]{.underline}等方式记录种子的生长过程。</p></div>
+        <!-- 7 -->
+        <div class="knowledge-card"><p><strong>7.</strong> 种子的[萌发]{.underline}需要[适宜的温度、适量的水分、充足的空气]{.underline}。</p></div>
+        <!-- 8 -->
+        <div class="knowledge-card"><p><strong>8.</strong> 有些植物可以用[根、茎]{.underline}来繁殖后代。（马铃薯、洋葱、番薯等）</p></div>
+        <!-- 9 -->
+        <div class="knowledge-card"><p><strong>9.</strong> 种子萌发时先长出[根]{.underline}，然后长出茎和叶，根的生长速度很快。</p></div>
+        <!-- 10 -->
+        <div class="knowledge-card"><p><strong>10.</strong> 无论把种子的种脐朝什么方向放置，[根]{.underline}最终都是[向下]{.underline}生长的。（具有向地性）</p></div>
+        <!-- 11 -->
+        <div class="knowledge-card"><p><strong>11.</strong> [探究植物根的作用实验]{.underline}<br>（1）选用[红色的水]{.underline}是为了便于观测。<br>（2）在水面上滴些[植物油]{.underline}是为了防止试管中的水蒸发到空气中。<br>（3）实验现象：[一段时间后，发现试管中的水面下降。]{.underline}<br>（4）实验结论：[试管中水面下降说明植物的根有吸收水分的作用]{.underline}。</p></div>
+        <!-- 12 -->
+        <div class="knowledge-card"><p><strong>12.</strong> 植物的根可以[吸收水分和无机盐]{.underline}，还能将植物[固定]{.underline}在土壤中。</p></div>
+        <!-- 13 -->
+        <div class="knowledge-card"><p><strong>13.</strong> 不同的植物，根的形态特征不同。常见的有[直根系、须根系和变态根]{.underline}。</p></div>
+        <!-- 14 -->
+        <div class="knowledge-card"><p><strong>14.</strong> 植物的叶子平展而且在茎上交叉生长是为了能够[最大限度地接受阳光]{.underline}。</p></div>
+        <!-- 15 -->
+        <div class="knowledge-card"><p><strong>15.</strong> 植物的[叶子]{.underline}能吸收阳光进行[光合作用]{.underline}，[产生]{.underline}自身生长发育所需的[养料]{.underline}。</p></div>
+        <!-- 16 -->
+        <div class="knowledge-card"><p><strong>16.</strong> [茎的运输作用实验]{.underline}<br>（1）实验现象：将凤仙花的茎纵切开，发现茎的[纵切面]{.underline}上有[红色的线状结构]{.underline}。将凤仙花的茎横切开，发现茎的[横切面]{.underline}上有[红色的点状结构]{.underline}。<br>（2）实验结论:[茎具有运输的作用]{.underline}。</p></div>
+        <!-- 17 -->
+        <div class="knowledge-card"><p><strong>17.</strong> [叶具有吸收阳光及蒸腾水分的作用的实验]{.underline}<br>（1）将叶子用[黑色纸遮住]{.underline},使它见不到阳光。5天后，[观察到被遮住光的这片叶子会变黄]{.underline}。<br>（2）在叶子上套上一个[干燥的塑料袋]{.underline}。观察到[塑料袋内壁上有大量的小水滴]{.underline}。</p></div>
+        <!-- 18 不同形态的茎，原图忽略，保留文字 -->
+        <div class="knowledge-card"><p><strong>18.</strong> 不同形态的茎 (图片略，可查阅资料)</p></div>
+        <!-- 19 -->
+        <div class="knowledge-card"><p><strong>19.</strong> 观察花的结构：[从外到内]{.underline}</p></div>
+        <!-- 20 完全花 -->
+        <div class="knowledge-card"><p><strong>20.</strong> 像凤仙花一样由[雄蕊、雌蕊、花萼]{.underline}和[花瓣]{.underline}四部分组成的花，叫[完全花]{.underline}。如：[油菜花、白菜花、豌豆花、牵牛花、桃花、玉兰花、梨花、海棠花、迎春花]{.underline}等。</p></div>
+        <!-- 21 -->
+        <div class="knowledge-card"><p><strong>21.</strong> [缺少]{.underline}其中一部分或几部分的花，叫[不完全花]{.underline}。如：[南瓜花、黄瓜、丝瓜、柳树、杨树、桑树]{.underline}等。</p></div>
+        <!-- 22 -->
+        <div class="knowledge-card"><p><strong>22.</strong> 既有雄蕊，又有雌蕊的花叫[两性花]{.underline}。有雄蕊没有雌蕊的花叫雄花，有雌蕊没有雄蕊的花叫雌花，[雄花和雌花都是单性花]{.underline}。</p></div>
+        <!-- 23 -->
+        <div class="knowledge-card"><p><strong>23.</strong> 自然界中的植物[多种多样]{.underline}，它们用不同的方式完成[传粉]{.underline}的过程。只有完成[传粉]{.underline}，植物的花才能[发育成果实]{.underline}。</p></div>
+        <!-- 24 -->
+        <div class="knowledge-card"><p><strong>24.</strong> 像[油菜花]{.underline}那样由蜜蜂等[昆虫传播花粉]{.underline}的叫做[虫媒花]{.underline}。像[蒲公英]{.underline}那样，靠[风传播花粉]{.underline}的叫[风媒花]{.underline}。</p></div>
+        <!-- 25 混合列表 -->
+        <div class="knowledge-card"><p><strong>25.</strong> 植物有[传播花粉]{.underline}的方法：（1）自花传粉，如大麦、小麦、大豆、豌豆、芝麻等；（2）异花传粉；（3）风媒花，如杨树、栎树、桦树等；（4）虫媒花，如油菜花、白菜花、桃花等。</p></div>
+        <!-- 26 27 28 -->
+        <div class="knowledge-card"><p><strong>26.</strong> 果实一般包括[果皮和种子]{.underline}两部分。</p></div>
+        <div class="knowledge-card"><p><strong>27.</strong> 果皮的作用是能[保护胚珠]{.underline}，使种子正常发育。</p></div>
+        <div class="knowledge-card"><p><strong>28.</strong> 苹果、桃子、西瓜等我们食用的是[植物的果实]{.underline}。<br>豌豆、莲子、花生等我们食用的是[植物的种子]{.underline}。</p></div>
+
+        <!-- 29 种子的传播方式 (表格) 手动构建表格，保留填空标记 -->
+        <div class="knowledge-card">
+            <p><strong>29. 种子的传播方式</strong></p>
+            <table>
+                <tr><th>传播方式</th><th>特征</th><th>例子</th></tr>
+                <tr><td rowspan="2"><strong>[弹力传播]{.underline}</strong></td><td>[果皮自动爆裂]{.underline}</td><td>[凤仙花、油莱、绿豆、大豆、喷瓜]{.underline}</td></tr>
+                <tr><td colspan="2" style="background:#f9ffe6;"></td></tr> <!-- 占位调整，实际上面已合并，但为美观，省略多余 -->
+                <tr><td rowspan="2"><strong>[动物传播]{.underline}</strong></td><td>[果实外有倒钩]{.underline}</td><td>[苍耳、鬼针草、蒺藜]{.underline}</td></tr>
+                <tr><td>[果实美味多汁]{.underline}</td><td>[樱桃、番茄、葡萄、西瓜]{.underline}</td></tr>
+                <tr><td><strong>[风传播]{.underline}</strong></td><td>[种子轻、带翅或有绒毛]{.underline}</td><td>[蒲公英、榆树、枫树、蓟、槭树]{.underline}</td></tr>
+                <tr><td><strong>[水传播]{.underline}</strong></td><td>[种子的种皮包有海绵状]{.underline}</td><td>[莲蓬、椰子、水葫芦、睡莲]{.underline}</td></tr>
+            </table>
+            <p style="margin-top:5px;">* 注：表格中[油莱]原文如此，保留。</p>
+        </div>
+
+        <!-- 30 31 -->
+        <div class="knowledge-card"><p><strong>30.</strong> 油菜和凤仙花一样由[根、茎、叶、花、果实和种子]{.underline}六部分组成。</p></div>
+        <div class="knowledge-card"><p><strong>31.</strong> 凤仙花的生长过程中需要[阳光、土壤、适宜的水分和温度]{.underline}等。</p></div>
+
+        <!-- 补充分，原文档有些文本无编号但保留，已全覆盖 -->
+    </div>
+
+    <div class="footer-note">
+        🌱 小手点点 · 越学越牢
+    </div>
+</div>
+
+<script>
+    (function() {
+        // 获取内容容器
+        const content = document.getElementById('knowledgeContent');
+
+        // ---------- 将文本节点中的 [关键词]{.underline} 替换为填空组件 ----------
+        function processTextNode(node) {
+            const text = node.nodeValue;
+            // 正则匹配 [任意内容]{.underline}
+            const regex = /\[(.*?)\]\{\.underline\}/g;
+            let match;
+            let lastIndex = 0;
+            const fragment = document.createDocumentFragment();
+            let hasMatch = false;
+
+            while ((match = regex.exec(text)) !== null) {
+                hasMatch = true;
+                // 前面普通文本
+                if (match.index > lastIndex) {
+                    fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
+                }
+
+                const fullMatch = match[0];
+                const innerContent = match[1]; // 括号内内容
+
+                // 按顿号分割innerContent (保留顿号)
+                const parts = innerContent.split(/([、])/g);
+                // 创建一个blank-group容器
+                const group = document.createElement('span');
+                group.className = 'blank-group';
+
+                for (let i = 0; i < parts.length; i++) {
+                    const part = parts[i];
+                    if (part === '、') {
+                        // 添加顿号分隔符
+                        const sepSpan = document.createElement('span');
+                        sepSpan.className = 'blank-sep';
+                        sepSpan.textContent = '、';
+                        group.appendChild(sepSpan);
+                    } else if (part.trim() !== '') {
+                        // 创建填空块 (即使部分为空字符串也跳过)
+                        const blankSpan = document.createElement('span');
+                        blankSpan.className = 'blank hidden-state';  // 初始隐藏
+                        blankSpan.setAttribute('data-answer', part);
+                        blankSpan.textContent = part;  // 文字存在，但被CSS隐藏（color:transparent + 伪元素?）
+                        // 注意 hidden-state 会隐藏文字并显示伪元素问号
+                        group.appendChild(blankSpan);
+                    }
+                }
+
+                fragment.appendChild(group);
+                lastIndex = match.index + fullMatch.length;
+            }
+
+            if (!hasMatch) return null; // 无变化
+
+            // 剩余文本
+            if (lastIndex < text.length) {
+                fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
+            }
+            return fragment;
+        }
+
+        // 遍历所有文本节点 (深度优先)
+        function walkTextNodes(node) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                // 处理文本节点
+                const parent = node.parentNode;
+                // 避免处理已经替换过的 (如blank内部)
+                if (parent.classList && (parent.classList.contains('blank') || parent.classList.contains('blank-group') || parent.classList.contains('blank-sep'))) {
+                    return;
+                }
+                const newFrag = processTextNode(node);
+                if (newFrag) {
+                    parent.replaceChild(newFrag, node);
+                }
+            } else {
+                // 递归子节点，但避开脚本、style等
+                if (node.nodeName !== 'SCRIPT' && node.nodeName !== 'STYLE' && node.childNodes) {
+                    // 由于替换可能增加节点，用固定长度快照
+                    const children = Array.from(node.childNodes);
+                    for (let child of children) {
+                        walkTextNodes(child);
+                    }
+                }
+            }
+        }
+
+        // 执行替换
+        walkTextNodes(content);
+
+        // ---------- 交互逻辑 ----------
+        // 获取所有填空blank (动态添加后)
+        let blanks = document.querySelectorAll('.blank');
+
+        // 单个点击切换
+        content.addEventListener('click', function(e) {
+            const target = e.target.closest('.blank');
+            if (!target) return;
+
+            if (target.classList.contains('hidden-state')) {
+                // 显示答案：移除hidden-state，显示文字
+                target.classList.remove('hidden-state');
+            } else {
+                // 隐藏答案：添加hidden-state
+                target.classList.add('hidden-state');
+            }
+        });
+
+        // 显示所有答案
+        document.getElementById('showAllBtn').addEventListener('click', function() {
+            document.querySelectorAll('.blank').forEach(blank => {
+                blank.classList.remove('hidden-state');
+            });
+        });
+
+        // 隐藏所有答案
+        document.getElementById('hideAllBtn').addEventListener('click', function() {
+            document.querySelectorAll('.blank').forEach(blank => {
+                blank.classList.add('hidden-state');
+            });
+        });
+
+        // 注意：后续可能因替换增加新blank？目前一次性处理完毕。
+        // 但表格中可能额外生成，已经包含。
+        // 重新获取一次确保最新？
+        // 但上面事件监听使用动态查询，可以。
+        // 补一个初始化所有blank为hidden-state (已经由class设定)
+    })();
+</script>
+
+<!-- 注：原始文档图片标记被忽略，表格根据内容重构，所有[...]{.underline}已经转换为填空。 -->
+</body>
 </html>
